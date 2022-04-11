@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/girl.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/girl.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Course 4 Convolutional Neural NetworksWeek 1 Foundations of Convolutional Neural Networks1.1 Computer Vision如果不使用卷积计算，处理一张图片所需的参数过大。 1.2 Edge Detection  Example图像乘以如下3×3×1的filter，在边缘的地方，生成的矩阵会有一条亮边。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Learning Notes">
+<meta property="og:url" content="http://example.com/2022/04/11/test/index.html">
+<meta property="og:site_name" content="TreeStop&#39;s Tech Notes">
+<meta property="og:description" content="Course 4 Convolutional Neural NetworksWeek 1 Foundations of Convolutional Neural Networks1.1 Computer Vision如果不使用卷积计算，处理一张图片所需的参数过大。 1.2 Edge Detection  Example图像乘以如下3×3×1的filter，在边缘的地方，生成的矩阵会有一条亮边。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-11T12:11:48.000Z">
+<meta property="article:modified_time" content="2022-04-11T12:25:23.062Z">
+<meta property="article:author" content="TreeStop">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/04/11/test/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Deep Learning Notes | TreeStop's Tech Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">TreeStop's Tech Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/11/test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="TreeStop">
+      <meta itemprop="description" content="I shall fall like a tree.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TreeStop's Tech Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Deep Learning Notes
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-04-11 20:11:48 / 修改时间：20:25:23" itemprop="dateCreated datePublished" datetime="2022-04-11T20:11:48+08:00">2022-04-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Course-4-Convolutional-Neural-Networks"><a href="#Course-4-Convolutional-Neural-Networks" class="headerlink" title="Course 4 Convolutional Neural Networks"></a>Course 4 Convolutional Neural Networks</h1><h2 id="Week-1-Foundations-of-Convolutional-Neural-Networks"><a href="#Week-1-Foundations-of-Convolutional-Neural-Networks" class="headerlink" title="Week 1 Foundations of Convolutional Neural Networks"></a>Week 1 Foundations of Convolutional Neural Networks</h2><h3 id="1-1-Computer-Vision"><a href="#1-1-Computer-Vision" class="headerlink" title="1.1 Computer Vision"></a>1.1 Computer Vision</h3><p>如果不使用卷积计算，处理一张图片所需的参数过大。</p>
+<h3 id="1-2-Edge-Detection-Example"><a href="#1-2-Edge-Detection-Example" class="headerlink" title="1.2 Edge Detection  Example"></a>1.2 Edge Detection  Example</h3><p>图像乘以如下3×3×1的filter，在边缘的地方，生成的矩阵会有一条亮边。</p>
+<script type="math/tex; mode=display">
+\left[
+\begin{matrix}
+1 & 0 & -1\\
+1 & 0 & -1\\
+1 & 0 & -1
+\end{matrix}
+\right]</script><h3 id="1-3-More-Edge-Detection"><a href="#1-3-More-Edge-Detection" class="headerlink" title="1. 3 More Edge Detection"></a>1. 3 More Edge Detection</h3><p>图片由亮至暗：亮边</p>
+<p>图片由暗至亮：暗边</p>
+<p>Sobel 过滤器：</p>
+<script type="math/tex; mode=display">
+\left[
+\begin{matrix}
+1 & 0 & -1\\
+2 & 0 & -2\\
+1 & 0 & -1
+\end{matrix}
+\right]</script><p>Scharr过滤器：</p>
+<script type="math/tex; mode=display">
+\left[
+\begin{matrix}
+3 & 0 & -3\\
+10 & 0 & -10\\
+3 & 0 & -3
+\end{matrix}
+\right]</script><h3 id="1-4-Padding"><a href="#1-4-Padding" class="headerlink" title="1.4 Padding"></a>1.4 Padding</h3><p>没有padding的缺点：</p>
+<ol>
+<li><p>每做一次卷积，图像都会减小</p>
+</li>
+<li><p>边缘像素点利用率低，丢失信息</p>
+</li>
+</ol>
+<p><strong>Valid卷积</strong>：不填充</p>
+<p><strong>Same卷积</strong>：输出大小 = 输入大小</p>
+<script type="math/tex; mode=display">
+n+2p-f+1=n\\
+p=(f-1)/2</script><p>习惯上只使用奇数值f：</p>
+<ul>
+<li>same可以自然填充</li>
+<li>有中心像素点</li>
+</ul>
+<h3 id="1-5-Strided-Convolutions"><a href="#1-5-Strided-Convolutions" class="headerlink" title="1.5 Strided Convolutions"></a>1.5 Strided Convolutions</h3><script type="math/tex; mode=display">
+\lfloor \frac {n+2p-f} {s}+1 \rfloor</script><p><strong>Tips</strong>：数学概念上，卷积运算需要将过滤器先做一次镜像操作（先顺时针旋转90°，再水平翻转），而我们所做的乘积求和，严格来说是<code>互相关（cross-correlation）</code></p>
+<h3 id="1-6-Convolutions-over-Volumes"><a href="#1-6-Convolutions-over-Volumes" class="headerlink" title="1.6 Convolutions over Volumes"></a>1.6 Convolutions over Volumes</h3><ul>
+<li><p>过滤器通道数必须与原图片相同</p>
+</li>
+<li><p>只想检测红色时，可以将绿色和蓝色过滤器参数都设为0</p>
+</li>
+<li><p>过滤器个数即下一层的通道数</p>
+</li>
+</ul>
+<h3 id="1-7-One-Layer-of-a-Convolutional-Network"><a href="#1-7-One-Layer-of-a-Convolutional-Network" class="headerlink" title="1.7 One Layer of a Convolutional Network"></a>1.7 One Layer of a Convolutional Network</h3><ol>
+<li>卷积（相当于W*a）</li>
+<li>加上偏差</li>
+<li>ReLU</li>
+</ol>
+<p><strong>避免过拟合</strong>：无论图片有多大，参数数量不变（filter+b）</p>
+<h3 id="1-8-A-Simple-Convolutional-Network-Example"><a href="#1-8-A-Simple-Convolutional-Network-Example" class="headerlink" title="1.8 A Simple Convolutional Network Example"></a>1.8 A Simple Convolutional Network Example</h3><ul>
+<li><p>经过几层过滤器之后，将提取的特征平整化成向量，再用logistic或SoftMax处理。</p>
+</li>
+<li><p>高度和宽度逐渐减小，通道数逐渐增多。</p>
+</li>
+</ul>
+<h3 id="1-9-Pooling-Layers"><a href="#1-9-Pooling-Layers" class="headerlink" title="1.9 Pooling Layers"></a>1.9 Pooling Layers</h3><p>池化层过滤器是二维的，故通道数不变，只会改变宽和高。</p>
+<ul>
+<li>最大池化Max Pooling</li>
+<li>平均池化Average Pooling</li>
+</ul>
+<p><strong>Tips</strong>：常用参数值为f=2，s=2或f=3，s=2（静态参数，不需要学习）</p>
+<h3 id="1-10-Convolutional-Neural-Network-Example"><a href="#1-10-Convolutional-Neural-Network-Example" class="headerlink" title="1.10 Convolutional Neural Network Example"></a>1.10 Convolutional Neural Network Example</h3><p><strong>Tips</strong>：Layer1=CONV1+POOL1（只统计有权重的层，故将池化层合并到卷积层）</p>
+<ul>
+<li>CONV</li>
+<li>POOL</li>
+<li>Full Connection全连接层：类似于神经网络</li>
+</ul>
+<h3 id="1-11-Why-Convolutions"><a href="#1-11-Why-Convolutions" class="headerlink" title="1.11 Why Convolutions"></a>1.11 Why Convolutions</h3><ul>
+<li>参数共享：比如垂直边缘检测器，整张图片都在共享这个filter</li>
+<li>稀疏连接：输出值只依赖于一小部分输入值，并不跟所有输入值有关联</li>
+</ul>
+<h2 id="Week-2-Deep-Convolutional-Models-Case-Studies"><a href="#Week-2-Deep-Convolutional-Models-Case-Studies" class="headerlink" title="Week 2 Deep Convolutional Models: Case Studies"></a>Week 2 Deep Convolutional Models: Case Studies</h2><h3 id="2-1-Why-Look-at-Case-Studies"><a href="#2-1-Why-Look-at-Case-Studies" class="headerlink" title="2.1 Why Look at Case Studies"></a>2.1 Why Look at Case Studies</h3><p>学习经典的神经网络框架</p>
+<h3 id="2-2-Classic-Networks"><a href="#2-2-Classic-Networks" class="headerlink" title="2.2 Classic Networks"></a>2.2 Classic Networks</h3><ul>
+<li>LeNet-5</li>
+</ul>
+<p><strong>Tips</strong>：使用sigmoid函数和tanh函数，而不是ReLU函数；大约6万个参数</p>
+<ul>
+<li>AlexNet</li>
+</ul>
+<p><strong>Tips</strong>：使用ReLU函数；大约6000万个参数</p>
+<ul>
+<li>VGG-16</li>
+</ul>
+<p><strong>Tips</strong>：网络结构规整；大约1.38亿个参数</p>
+<h3 id="2-3-Residual-Networks-ResNets"><a href="#2-3-Residual-Networks-ResNets" class="headerlink" title="2.3 Residual Networks (ResNets)"></a>2.3 Residual Networks (ResNets)</h3><p>$a^{[l]}$直接跳跃连接至神经网络的深层，产生残差块，多个残差块连接形成残差网络。</p>
+<script type="math/tex; mode=display">
+a^{[l+2]}=g(z^{[l+2]}+a^{[l]})</script><p><strong>Tips</strong>：随着神经网络深度增加，training errors会先减少再增多（越深优化算法越难训练），残差网络可以有效避免这一点。</p>
+<h3 id="2-4-Why-ResNets-Work"><a href="#2-4-Why-ResNets-Work" class="headerlink" title="2.4 Why ResNets Work"></a>2.4 Why ResNets Work</h3><ul>
+<li><p>残差块学习恒等函数很简单，网络性能不会影响</p>
+</li>
+<li><p>如果$a^{[l]}$和$a^{[l+2]}$维度不同，需要增加一个$W_s$权重矩阵转化维度</p>
+</li>
+</ul>
+<h3 id="2-5-Network-in-Network-and-1×1-Convolutions"><a href="#2-5-Network-in-Network-and-1×1-Convolutions" class="headerlink" title="2.5 Network in Network and 1×1 Convolutions"></a>2.5 Network in Network and 1×1 Convolutions</h3><p>池化层压缩宽和高，1×1的卷积层则压缩通道数。</p>
+<h3 id="2-6-Inception-Network-Motivation"><a href="#2-6-Inception-Network-Motivation" class="headerlink" title="2.6 Inception Network Motivation"></a>2.6 Inception Network Motivation</h3><p>使用1×1卷积构建瓶颈层，可以大大降低计算成本。</p>
+<h3 id="2-7-Inception-Network"><a href="#2-7-Inception-Network" class="headerlink" title="2.7 Inception Network"></a>2.7 Inception Network</h3><p>通过构建瓶颈层，将多个卷积（池化）输出连接起来，构成一个Inception模块。多个Inception模块连接构成Inception网络。</p>
+<h3 id="2-8-Using-Open-source-Implementations"><a href="#2-8-Using-Open-source-Implementations" class="headerlink" title="2.8 Using Open-source Implementations"></a>2.8 Using Open-source Implementations</h3><p>开源大法好</p>
+<h3 id="2-9-Transfer-Learning"><a href="#2-9-Transfer-Learning" class="headerlink" title="2.9 Transfer Learning"></a>2.9 Transfer Learning</h3><p>如果只有一个很小的数据集，可以利用开源项目，冻结除了softmax以外的其他层，来训练自己的数据集。</p>
+<p>自己的数据集越大，需要冻结的层数越少。</p>
+<p>数据集足够大时，可以仅用开源权重初始化。</p>
+<h3 id="2-10-Data-Augmentation"><a href="#2-10-Data-Augmentation" class="headerlink" title="2.10 Data Augmentation"></a>2.10 Data Augmentation</h3><p>镜像对称、随机裁剪、颜色失真</p>
+<h3 id="2-11-The-State-of-Computer-Vision"><a href="#2-11-The-State-of-Computer-Vision" class="headerlink" title="2.11 The State of Computer Vision"></a>2.11 The State of Computer Vision</h3><p>数据不够，hand engineering来凑</p>
+<ul>
+<li>Ensembling：独立训练几个神经网络，平均输出</li>
+<li>Multi-crop：原图+4个裁剪角落+镜像+镜像的4个裁剪角落</li>
+</ul>
+<p><strong>Tips</strong>：以上两种办法有用，但不适合实际应用</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Course-4-Convolutional-Neural-Networks"><span class="nav-number">1.</span> <span class="nav-text">Course 4 Convolutional Neural Networks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Week-1-Foundations-of-Convolutional-Neural-Networks"><span class="nav-number">1.1.</span> <span class="nav-text">Week 1 Foundations of Convolutional Neural Networks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-Computer-Vision"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 Computer Vision</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-Edge-Detection-Example"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 Edge Detection  Example</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-More-Edge-Detection"><span class="nav-number">1.1.3.</span> <span class="nav-text">1. 3 More Edge Detection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-Padding"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 Padding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-Strided-Convolutions"><span class="nav-number">1.1.5.</span> <span class="nav-text">1.5 Strided Convolutions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-Convolutions-over-Volumes"><span class="nav-number">1.1.6.</span> <span class="nav-text">1.6 Convolutions over Volumes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-One-Layer-of-a-Convolutional-Network"><span class="nav-number">1.1.7.</span> <span class="nav-text">1.7 One Layer of a Convolutional Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-A-Simple-Convolutional-Network-Example"><span class="nav-number">1.1.8.</span> <span class="nav-text">1.8 A Simple Convolutional Network Example</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-9-Pooling-Layers"><span class="nav-number">1.1.9.</span> <span class="nav-text">1.9 Pooling Layers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-10-Convolutional-Neural-Network-Example"><span class="nav-number">1.1.10.</span> <span class="nav-text">1.10 Convolutional Neural Network Example</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-11-Why-Convolutions"><span class="nav-number">1.1.11.</span> <span class="nav-text">1.11 Why Convolutions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Week-2-Deep-Convolutional-Models-Case-Studies"><span class="nav-number">1.2.</span> <span class="nav-text">Week 2 Deep Convolutional Models: Case Studies</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Why-Look-at-Case-Studies"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 Why Look at Case Studies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Classic-Networks"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 Classic Networks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Residual-Networks-ResNets"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 Residual Networks (ResNets)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-Why-ResNets-Work"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 Why ResNets Work</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-Network-in-Network-and-1%C3%971-Convolutions"><span class="nav-number">1.2.5.</span> <span class="nav-text">2.5 Network in Network and 1×1 Convolutions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-Inception-Network-Motivation"><span class="nav-number">1.2.6.</span> <span class="nav-text">2.6 Inception Network Motivation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-Inception-Network"><span class="nav-number">1.2.7.</span> <span class="nav-text">2.7 Inception Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-8-Using-Open-source-Implementations"><span class="nav-number">1.2.8.</span> <span class="nav-text">2.8 Using Open-source Implementations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-9-Transfer-Learning"><span class="nav-number">1.2.9.</span> <span class="nav-text">2.9 Transfer Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-10-Data-Augmentation"><span class="nav-number">1.2.10.</span> <span class="nav-text">2.10 Data Augmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-11-The-State-of-Computer-Vision"><span class="nav-number">1.2.11.</span> <span class="nav-text">2.11 The State of Computer Vision</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="TreeStop"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">TreeStop</p>
+  <div class="site-description" itemprop="description">I shall fall like a tree.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2022-04 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">TreeStop</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
